@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour {
     public float movementSpeed = 15.0f;
     float xMax;
     float xMin;
-    public float padding = 1f;
+    public float padding = 0.5f;
 
 
     // Use this for initialization
