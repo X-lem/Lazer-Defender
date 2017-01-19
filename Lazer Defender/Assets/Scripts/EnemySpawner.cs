@@ -4,10 +4,10 @@ using System.Collections;
 public class EnemySpawner : MonoBehaviour {
 
     public GameObject enemyPrefab;
-    public float movementSpeed = 5.0f;
+    public float enemySpeed = 5.0f;
     public float width = 10f;
     public float hight = 5f;
-    public float padding = 0.2f;
+    public float padding = 0f;
     float xMax;
     float xMin;
     bool isMovingRight = false;
@@ -45,14 +45,17 @@ public class EnemySpawner : MonoBehaviour {
     void moveFormation() {
 
         if (isMovingRight)
-            transform.position += Vector3.right * movementSpeed * Time.deltaTime;
+            transform.position += Vector3.right * enemySpeed * Time.deltaTime;
         else
-            transform.position += Vector3.left * movementSpeed * Time.deltaTime;
+            transform.position += Vector3.left * enemySpeed * Time.deltaTime;
 
         float rEdgeFormation = transform.position.x + (0.5f * width);
         float lEdgeFormation = transform.position.x - (0.5f * width);
 
-        if (lEdgeFormation < xMin || rEdgeFormation > xMax)
-            isMovingRight = !isMovingRight;
+        if (lEdgeFormation < xMin)
+            isMovingRight = true;
+        else if (rEdgeFormation > xMax)
+            isMovingRight = false;
+
     }
 }
