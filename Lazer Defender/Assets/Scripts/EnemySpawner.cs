@@ -9,13 +9,11 @@ public class EnemySpawner : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-
-
-        //foreach (Transform child in transform) {
+        foreach (Transform child in transform) {
             // Keeping the GameObjects orderly in the Unity UI
-            GameObject enemy = Instantiate(enemyPrefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
-            enemy.transform.parent = transform;
-        //}
+            GameObject enemy = Instantiate(enemyPrefab, child.transform.position, Quaternion.identity) as GameObject;
+            enemy.transform.parent = child;
+        }
 	}
 	
 	// Update is called once per frame
