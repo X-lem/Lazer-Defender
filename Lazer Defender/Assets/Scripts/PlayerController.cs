@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour {
 
     public GameObject lazerPrefab;
     float playerSpeed = 15.0f;
+    float playerHealth = 300f;
     float lazerSpeed = 1000f;
     float fireingRate = 0.3f;
     float xMax;
@@ -62,5 +63,19 @@ public class PlayerController : MonoBehaviour {
     void fire() {
         GameObject lazer = Instantiate(lazerPrefab, new Vector3(transform.position.x, transform.position.y + 0.5f, 0), Quaternion.identity) as GameObject;
         lazer.rigidbody2D.velocity = new Vector3(0, lazerSpeed * Time.deltaTime, 0);
+    }
+
+    void OnTriggerEnter2D(Collider2D collider) {
+
+        Projectile lazer = collider.gameObject.GetComponent<Projectile>();
+
+        if (lazer) {
+            playerHealth -= lazer.getDamage();
+            lazer.Hit();
+            Debug.Log(collider);
+            if (playerHealth <= 0) // Destroy Enemy
+                Destroy(gameObject);
+        }
+
     }
 }

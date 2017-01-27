@@ -2,8 +2,8 @@
 using System.Collections;
 
 public class EnemyController : MonoBehaviour {
-
-    public float health = 150;
+    public GameObject projectile;
+    private float health = 150;
 
     void OnTriggerEnter2D(Collider2D collider) {
 
@@ -12,8 +12,17 @@ public class EnemyController : MonoBehaviour {
         if (lazer) {
             health -= lazer.getDamage();
             lazer.Hit();
-            if (health <= 0)
+            Debug.Log(collider);
+            if (health <= 0) // Destroy Enemy
                 Destroy(gameObject);
         }
+    }
+
+
+    void Update() {
+
+        Instantiate(projectile, new Vector3(transform.position.x, transform.position.y - 0.5f), Quaternion.identity);
+
+
     }
 }
