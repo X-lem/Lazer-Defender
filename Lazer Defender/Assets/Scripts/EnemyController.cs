@@ -6,6 +6,16 @@ public class EnemyController : MonoBehaviour {
     private float health = 150;
     private float projectileSpeed = 10;
     private float shotsPerSecond = 0.5f;
+    public int scoreValue = 100;
+    private ScoreTracker st;
+
+    public AudioClip fireSound;
+    public AudioClip deathSound;
+
+    void Start() {
+        st = GameObject.Find("Score").GetComponent<ScoreTracker>();
+
+    }
 
     void OnTriggerEnter2D(Collider2D collider) {
 
@@ -14,10 +24,16 @@ public class EnemyController : MonoBehaviour {
         if (lazer) {
             health -= lazer.getDamage();
             lazer.Hit();
-            Debug.Log(collider);
-            if (health <= 0) // Destroy Enemy
-                Destroy(gameObject);
+            if (health <= 0) { // Destroy Enemy
+                Die();
+            }
         }
+    }
+
+    void Die() {
+        Destroy(gameObject);
+        st.Score(scoreValue);
+        AudioSource.PlayClipAtPoint(deathSound, transform.position);
     }
 
 
@@ -32,5 +48,6 @@ public class EnemyController : MonoBehaviour {
     void fire() {
         GameObject enemyLazer = Instantiate(projectile, new Vector3(transform.position.x, transform.position.y - 0.5f), Quaternion.identity) as GameObject;
         enemyLazer.rigidbody2D.velocity = new Vector2(0, -projectileSpeed);
+        AudioSource.PlayClipAtPoint(fireSound, transform.position);
     }
 }

@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour {
     float xMin;
     float yMax;
     public float padding = 0.7f;
+    public AudioClip fireSound;
 
 
     // Use this for initialization
@@ -63,6 +64,7 @@ public class PlayerController : MonoBehaviour {
     void fire() {
         GameObject lazer = Instantiate(lazerPrefab, new Vector3(transform.position.x, transform.position.y + 0.5f, 0), Quaternion.identity) as GameObject;
         lazer.rigidbody2D.velocity = new Vector3(0, lazerSpeed * Time.deltaTime, 0);
+        AudioSource.PlayClipAtPoint(fireSound, transform.position);
     }
 
     void OnTriggerEnter2D(Collider2D collider) {
@@ -73,9 +75,18 @@ public class PlayerController : MonoBehaviour {
             playerHealth -= lazer.getDamage();
             lazer.Hit();
             Debug.Log(collider);
-            if (playerHealth <= 0) // Destroy Enemy
-                Destroy(gameObject);
+            if (playerHealth <= 0) {// Destroy Player
+                Die();
+            }
         }
+    }
+
+    void Die() {
+        Debug.Log("Die Method Called");
+        // Load new level
+        LevelManager lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        lm.LoadLevel("Win");
+        Destroy(gameObject);
 
     }
 }

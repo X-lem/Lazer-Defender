@@ -11,15 +11,13 @@ public class EnemySpawner : MonoBehaviour {
     float xMax;
     float xMin;
     bool isMovingRight = false;
+    private bool isCoroutineExecuting = false;
+    float delayTime = 2f;
 
     // Use this for initialization
     void Start () {
 
-        foreach (Transform child in transform) {
-            // Keeping the GameObjects orderly in the Unity UI
-            GameObject enemy = Instantiate(enemyPrefab, child.transform.position, Quaternion.identity) as GameObject;
-            enemy.transform.parent = child;
-        }
+        SpawnUntilFill();
 
         // Get window position
         float zDistance = transform.position.z - Camera.main.transform.position.z;
@@ -40,7 +38,27 @@ public class EnemySpawner : MonoBehaviour {
 	void Update () {
 
         moveFormation();
+        
+        if(allEnemiesDead()) {
+
+            // Create dely before new enemys are spawned
+            StartCoroutine(delay(delayTime));
+        }
 	}
+
+
+    void SpawnUntilFill() {
+        Transform freePosition = NextFreePosition();
+        if (freePosition) {
+            GameObject enemy = Instantiate(enemyPrefab, freePosition.transform.position, Quaternion.identity) as GameObject;
+            enemy.transform.parent = freePosition;
+        }
+
+        // Spawn enemys at a slow rate
+        if (NextFreePosition())
+            Invoke("SpawnUntilFill", Random.Range(0.5f, 5.0f));
+        
+    }
 
     void moveFormation() {
 
@@ -56,6 +74,41 @@ public class EnemySpawner : MonoBehaviour {
             isMovingRight = true;
         else if (rEdgeFormation > xMax)
             isMovingRight = false;
+
+    }
+
+
+    Transform NextFreePosition() {
+        foreach (Transform child in transform) {
+            if (child.childCount == 0) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    
+
+    // Checks to see if all the enemies are dead
+    bool allEnemiesDead() {
+
+        foreach(Transform child in transform) {
+            if (child.childCount > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    IEnumerator delay(float time) {
+        if (isCoroutineExecuting)
+            yield break;
+        isCoroutineExecuting = true;
+        yield return new WaitForSeconds(time);
+        // Code to execute after the delay
+        SpawnUntilFill();
+
+        isCoroutineExecuting = false;
 
     }
 }
